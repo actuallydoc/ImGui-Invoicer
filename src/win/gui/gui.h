@@ -37,12 +37,16 @@ public:
 private:
     bool running;
     ImGuiTableFlags flags;
+    bool edit_mode = false;
     char name [128];
     bool show_demo_window;
-
+    invoice *current_invoice;
     void render_table();
 
     void render_parent_header();
+
+    bool edit_invoice();
+
 };
 
 

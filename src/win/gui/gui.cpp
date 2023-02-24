@@ -5,6 +5,8 @@
 #include "gui.h"
 #include "imgui.h"
 #include  <cstdlib>
+#include <iostream>
+
 gui::gui() {
     running = true;
     show_demo_window = false;
@@ -73,11 +75,51 @@ void gui::render_table(){
             ImGui::TableNextColumn();
             ImGui::Text("%s", "22%");
             ImGui::TableNextColumn();
-            ImGui::Button("Edit", ImVec2(-FLT_MIN, 0.0f));
+
+            if(ImGui::Button("Edit", ImVec2(-FLT_TRUE_MIN, 0.0f))){
+                //TODO edit
+                //Print invoice number
+                current_invoice = &invoices[i];
+                edit_mode = true;
+            }
         }
         ImGui::EndTable();
     }
 }
+
+bool gui::edit_invoice() {
+    //TODO edit invoice
+        ImGui::Begin("Edit invoice", nullptr, ImGuiWindowFlags_MenuBar);
+        ImGui::Text("Selected invoice: %s", this->current_invoice->invoice_number);
+        ImGui::InputText("Invoice number", current_invoice->invoice_number, IM_ARRAYSIZE(current_invoice->invoice_number));
+        ImGui::InputText("Name", current_invoice->name, IM_ARRAYSIZE(current_invoice->name));
+        ImGui::InputText("Address", current_invoice->address, IM_ARRAYSIZE(current_invoice->address));
+        ImGui::InputText("City", current_invoice->city, IM_ARRAYSIZE(current_invoice->city));
+        ImGui::InputText("State", current_invoice->state, IM_ARRAYSIZE(current_invoice->state));
+        ImGui::InputText("Zip", current_invoice->zip, IM_ARRAYSIZE(current_invoice->zip));
+        ImGui::InputText("Phone", current_invoice->phone, IM_ARRAYSIZE(current_invoice->phone));
+        ImGui::InputText("Email", current_invoice->email, IM_ARRAYSIZE(current_invoice->email));
+        ImGui::InputText("Date", current_invoice->date, IM_ARRAYSIZE(current_invoice->date));
+        ImGui::InputText("Due date", current_invoice->due_date, IM_ARRAYSIZE(current_invoice->due_date));
+
+        if(ImGui::Button("Save", ImVec2(-FLT_TRUE_MIN, 0.0f))){
+            //TODO save
+            current_invoice = nullptr;
+            ImGui::End();
+            return true;
+        }
+        ImGui::End();
+        return false;
+
+
+
+
+
+
+}
+
+
+
 
 void gui::render_parent_header() {
     ImGui::BeginMenuBar();
@@ -98,15 +140,23 @@ void gui::render_parent_header() {
 }
 void gui::show() {
     this->show_header();
-    ImGui::Begin("Hello, world!", nullptr, ImGuiWindowFlags_MenuBar);
+    ImGui::Begin("Invoice manager!", nullptr, ImGuiWindowFlags_MenuBar);
     ImGui::SetWindowSize(ImVec2(1280, 720));
-    ImGui::Text("This is some useful text.");
     render_parent_header();
     if(this->show_demo_window){
         ImGui::ShowDemoWindow(&this->show_demo_window);
     }
+    if(edit_mode){
+        if (edit_invoice()) {
+            edit_mode = false;
+            std::cout << "Edit mode off" << std::endl;
+        }
+
+    }
     this->render_table();
+
     ImGui::End();
+
 }
 
 void gui::show_header(){
