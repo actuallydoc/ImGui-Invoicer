@@ -1,0 +1,10 @@
+^D:\DEV\IMGUI-TEMPLATE-MAIN\BUILD\CMAKEFILES\BF53BDE71A0CA513A86DECF0682ADC7C\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/dev/imGUI-Template-main -BD:/dev/imGUI-Template-main/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/dev/imGUI-Template-main/build/imgui_cmake_starter.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
