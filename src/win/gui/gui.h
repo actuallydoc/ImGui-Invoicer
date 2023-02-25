@@ -56,7 +56,7 @@ private:
 
     void render_parent_header();
 
-    bool edit_invoice();
+    void edit_invoice();
 
 };
 

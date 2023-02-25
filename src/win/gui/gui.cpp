@@ -57,6 +57,7 @@ void gui::render_table(){
         ImGui::TableSetupScrollFreeze(0, 1); // Make row always visible
         ImGui::TableHeadersRow();
         for (int i = 0; i< invoices.size(); i++) {
+            //Make so if you click on the row it will select the invoice
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
             ImGui::Text("%s", invoices[i].invoice_number);
@@ -75,48 +76,51 @@ void gui::render_table(){
             ImGui::TableNextColumn();
             ImGui::Text("%s", "22%");
             ImGui::TableNextColumn();
-            if(ImGui::Button("Edit")) {
-                //Load invoice data to the new window
-                std::cout << "Setting current invoice to the index invoice" << std::endl;
+            ImGui::PushID(i);
+            ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(i / 7.0f, 0.6f, 0.6f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(i / 7.0f, 0.7f, 0.7f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(i / 7.0f, 0.8f, 0.8f));
+            if(ImGui::Button("Click")){
+                std::cout << "Clicked on invoice: " << invoices[i].invoice_number << std::endl;
                 this->current_invoice = &invoices[i];
+                if (!edit_mode){
+                    std::cout << "Edit mode enabled" << std::endl;
+                    this->edit_mode = reinterpret_cast<bool *>(true);
+                }
 
-                //Turn on the window
-                std::cout << "Setting edit mode to true" << std::endl;
-                this->edit_mode = reinterpret_cast<bool *>(true);
-
-            }
+            };
+            ImGui::PopStyleColor(3);
+            ImGui::PopID();
         }
         ImGui::EndTable();
     }
 }
 
-bool gui::edit_invoice() {
+void gui::edit_invoice() {
     //TODO edit invoice
-        ImGui::Begin("Edit invoice", this->edit_mode, ImGuiWindowFlags_MenuBar);
-        ImGui::Text("Selected invoice: %s", this->current_invoice->invoice_number);
-        ImGui::InputText("Invoice number", current_invoice->invoice_number, IM_ARRAYSIZE(current_invoice->invoice_number));
-        ImGui::InputText("Name", current_invoice->name, IM_ARRAYSIZE(current_invoice->name));
-        ImGui::InputText("Address", current_invoice->address, IM_ARRAYSIZE(current_invoice->address));
-        ImGui::InputText("City", current_invoice->city, IM_ARRAYSIZE(current_invoice->city));
-        ImGui::InputText("State", current_invoice->state, IM_ARRAYSIZE(current_invoice->state));
-        ImGui::InputText("Zip", current_invoice->zip, IM_ARRAYSIZE(current_invoice->zip));
-        ImGui::InputText("Phone", current_invoice->phone, IM_ARRAYSIZE(current_invoice->phone));
-        ImGui::InputText("Email", current_invoice->email, IM_ARRAYSIZE(current_invoice->email));
-        ImGui::InputText("Date", current_invoice->date, IM_ARRAYSIZE(current_invoice->date));
-        ImGui::InputText("Due date", current_invoice->due_date, IM_ARRAYSIZE(current_invoice->due_date));
+    ImGui::Begin("Edit invoice");
+    ImGui::Text("Selected invoice: %s", this->current_invoice->invoice_number);
+    ImGui::InputText("Invoice number", current_invoice->invoice_number, IM_ARRAYSIZE(current_invoice->invoice_number));
+    ImGui::InputText("Name", current_invoice->name, IM_ARRAYSIZE(current_invoice->name));
+    ImGui::InputText("Address", current_invoice->address, IM_ARRAYSIZE(current_invoice->address));
+    ImGui::InputText("City", current_invoice->city, IM_ARRAYSIZE(current_invoice->city));
+    ImGui::InputText("State", current_invoice->state, IM_ARRAYSIZE(current_invoice->state));
+    ImGui::InputText("Zip", current_invoice->zip, IM_ARRAYSIZE(current_invoice->zip));
+    ImGui::InputText("Phone", current_invoice->phone, IM_ARRAYSIZE(current_invoice->phone));
+    ImGui::InputText("Email", current_invoice->email, IM_ARRAYSIZE(current_invoice->email));
+    ImGui::InputText("Date", current_invoice->date, IM_ARRAYSIZE(current_invoice->date));
+    ImGui::InputText("Due date", current_invoice->due_date, IM_ARRAYSIZE(current_invoice->due_date));
 
-        if(ImGui::Button("Save", ImVec2(-FLT_TRUE_MIN, 0.0f))){
-            //TODO save
-            std::cout << "Save before everything" << std::endl;
-            std::cout << "Edit mode to false" << std::endl;
-            this->current_invoice = nullptr;
-            std::cout << "Current invoice to nullptr" << std::endl;
-            ImGui::End();
-            return true;
-        }
-        ImGui::End();
-        return false;
-
+    if (ImGui::Button("Save", ImVec2(-FLT_TRUE_MIN, 0.0f))) {
+        //TODO save
+        std::cout << "Save before everything" << std::endl;
+        std::cout << "Edit mode to false" << std::endl;
+        this->current_invoice = nullptr;
+        std::cout << "Current invoice to nullptr" << std::endl;
+        this->edit_mode = reinterpret_cast<bool *>(false);
+        std::cout << "Edit mode to false" << std::endl;
+    }
+    ImGui::End();
 }
 
 void gui::render_parent_header() {
@@ -136,24 +140,20 @@ void gui::render_parent_header() {
     ImGui::EndMenuBar();
 
 }
+
+
 void gui::show() {
     this->show_header();
-    ImGui::Begin("Invoice manager!", reinterpret_cast<bool *>(this->running), ImGuiWindowFlags_MenuBar);
-    ImGui::SetWindowSize(ImVec2(1280, 720));
+    bool show_child_window = false;
+    ImGui::Begin("Invoice manager!", reinterpret_cast<bool *>(this->running), ImGuiWindowFlags_MenuBar );
     render_parent_header();
     if(this->show_demo_window){
         ImGui::ShowDemoWindow(&this->show_demo_window);
     }
     this->render_table();
-    if(edit_mode){
-        ImGui::BeginChild("Edit invoice", ImVec2(0, 0), true);
-        if (edit_invoice()) {
-            ImGui::BeginChild("Edit invoice", ImVec2(0, 0), true);
-            edit_mode = false;
-            ImGui::EndChild();
-        }
-        ImGui::EndChild();
-
+    if (edit_mode)
+    {   std::cout << "Edit mode is true" << std::endl;
+        this->edit_invoice();
     }
 
 
