@@ -44,15 +44,15 @@ gui::invoice gui::generate_invoice(){
 void gui::render_table(){
     if (ImGui::BeginTable("table1", 9, flags))
     {
-        ImGui::TableSetupColumn("St racuna", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Datum racuna", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Datum storitve", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Partner", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Izvajalec", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("STATUS", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Skupaj", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("DDV%", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Funkcije", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("St racuna", ImGuiTableColumnFlags_WidthFixed,0.0,Column_InvoiceNumber);
+        ImGui::TableSetupColumn("Datum racuna", ImGuiTableColumnFlags_WidthFixed,0.0, Column_InvoiceDate);
+        ImGui::TableSetupColumn("Datum storitve", ImGuiTableColumnFlags_WidthStretch,0.0, Column_ServiceDate);
+        ImGui::TableSetupColumn("Partner", ImGuiTableColumnFlags_WidthStretch,0.0, Column_Partner);
+        ImGui::TableSetupColumn("Izvajalec", ImGuiTableColumnFlags_WidthStretch,0.0, Column_Provider);
+        ImGui::TableSetupColumn("STATUS", ImGuiTableColumnFlags_WidthStretch,0.0, Column_Status);
+        ImGui::TableSetupColumn("Skupaj", ImGuiTableColumnFlags_WidthStretch,0.0, Column_Total);
+        ImGui::TableSetupColumn("DDV%", ImGuiTableColumnFlags_WidthStretch,0.0, Column_Tax);
+        ImGui::TableSetupColumn("Funkcije", ImGuiTableColumnFlags_WidthStretch, 0.0,TableColumns::Column_Action);
 
         ImGui::TableSetupScrollFreeze(0, 1); // Make row always visible
         ImGui::TableHeadersRow();
@@ -75,12 +75,15 @@ void gui::render_table(){
             ImGui::TableNextColumn();
             ImGui::Text("%s", "22%");
             ImGui::TableNextColumn();
+            if(ImGui::Button("Edit")) {
+                //Load invoice data to the new window
+                std::cout << "Setting current invoice to the index invoice" << std::endl;
+                this->current_invoice = &invoices[i];
 
-            if(ImGui::Button("Edit", ImVec2(-FLT_TRUE_MIN, 0.0f))){
-                //TODO edit
-                //Print invoice number
-                current_invoice = &invoices[i];
-                edit_mode = true;
+                //Turn on the window
+                std::cout << "Setting edit mode to true" << std::endl;
+                this->edit_mode = reinterpret_cast<bool *>(true);
+
             }
         }
         ImGui::EndTable();
@@ -89,7 +92,7 @@ void gui::render_table(){
 
 bool gui::edit_invoice() {
     //TODO edit invoice
-        ImGui::Begin("Edit invoice", nullptr, ImGuiWindowFlags_MenuBar);
+        ImGui::Begin("Edit invoice", this->edit_mode, ImGuiWindowFlags_MenuBar);
         ImGui::Text("Selected invoice: %s", this->current_invoice->invoice_number);
         ImGui::InputText("Invoice number", current_invoice->invoice_number, IM_ARRAYSIZE(current_invoice->invoice_number));
         ImGui::InputText("Name", current_invoice->name, IM_ARRAYSIZE(current_invoice->name));
@@ -104,22 +107,17 @@ bool gui::edit_invoice() {
 
         if(ImGui::Button("Save", ImVec2(-FLT_TRUE_MIN, 0.0f))){
             //TODO save
-            current_invoice = nullptr;
+            std::cout << "Save before everything" << std::endl;
+            std::cout << "Edit mode to false" << std::endl;
+            this->current_invoice = nullptr;
+            std::cout << "Current invoice to nullptr" << std::endl;
             ImGui::End();
             return true;
         }
         ImGui::End();
         return false;
 
-
-
-
-
-
 }
-
-
-
 
 void gui::render_parent_header() {
     ImGui::BeginMenuBar();
@@ -140,20 +138,24 @@ void gui::render_parent_header() {
 }
 void gui::show() {
     this->show_header();
-    ImGui::Begin("Invoice manager!", nullptr, ImGuiWindowFlags_MenuBar);
+    ImGui::Begin("Invoice manager!", reinterpret_cast<bool *>(this->running), ImGuiWindowFlags_MenuBar);
     ImGui::SetWindowSize(ImVec2(1280, 720));
     render_parent_header();
     if(this->show_demo_window){
         ImGui::ShowDemoWindow(&this->show_demo_window);
     }
+    this->render_table();
     if(edit_mode){
+        ImGui::BeginChild("Edit invoice", ImVec2(0, 0), true);
         if (edit_invoice()) {
+            ImGui::BeginChild("Edit invoice", ImVec2(0, 0), true);
             edit_mode = false;
-            std::cout << "Edit mode off" << std::endl;
+            ImGui::EndChild();
         }
+        ImGui::EndChild();
 
     }
-    this->render_table();
+
 
     ImGui::End();
 

@@ -34,10 +34,21 @@ public:
     void show();
     void show_header();
     invoice generate_invoice();
+    enum TableColumns {
+        Column_InvoiceNumber,
+        Column_InvoiceDate,
+        Column_ServiceDate,
+        Column_Partner,
+        Column_Provider,
+        Column_Status,
+        Column_Total,
+        Column_Tax,
+        Column_Action
+    };
 private:
     bool running;
     ImGuiTableFlags flags;
-    bool edit_mode = false;
+    bool *edit_mode = false;
     char name [128];
     bool show_demo_window;
     invoice *current_invoice;
