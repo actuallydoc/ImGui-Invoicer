@@ -180,16 +180,16 @@ void gui::edit_invoice() {
             ImGui::InputText("VAT ID", current_invoice->provider.vat, IM_ARRAYSIZE(current_invoice->provider.vat));
             ImGui::InputText("Phone", current_invoice->provider.phone, IM_ARRAYSIZE(current_invoice->provider.phone));
 
-            static ImGuiComboFlags flags = 0;
-            ImGui::CheckboxFlags("ImGuiComboFlags_PopupAlignLeft", &flags, ImGuiComboFlags_PopupAlignLeft);
-            if (ImGui::CheckboxFlags("ImGuiComboFlags_NoArrowButton", &flags, ImGuiComboFlags_NoArrowButton))
-                flags &= ~ImGuiComboFlags_NoPreview;     // Clear the other flag, as we cannot combine both
-            if (ImGui::CheckboxFlags("ImGuiComboFlags_NoPreview", &flags, ImGuiComboFlags_NoPreview))
-                flags &= ~ImGuiComboFlags_NoArrowButton; // Clear the other flag, as we cannot combine both
+            static ImGuiComboFlags flags = ImGuiComboFlags_PopupAlignLeft;
+
             static int item_current_idx = 0; // Here we store our selection data as an index.
+            for (int i = 0; i < 10; ++i) {
+                ImGui::Spacing();
+            }
             //!WARNING + BUG : The items have to have different names, otherwise the combo box will not work properly
             if (ImGui::BeginCombo("Existing Providers", providers[item_current_idx].name, flags))
             {
+                //Todo is to change the provider info on the invoice to the selected provider
                 for (int n = 0; n < providers.size(); n++)
                 {
                     std::cout << "Provider name: " << providers[n].name << std::endl;

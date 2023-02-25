@@ -5,7 +5,8 @@ This is a simple invoicer application built with Dear ImGui
 ## Image
 
 ![alt text](https://i.imgur.com/phJInP5.png)
-
+![alt text](https://i.imgur.com/nTKlXSq.png)
+![alt text](https://i.imgur.com/xHmVlYV.png)
 ## Features
 ### If i can implement everything I want, this will be the features:
 - Add, edit and delete company information
