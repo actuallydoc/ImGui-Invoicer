@@ -58,7 +58,7 @@ if (APPLE)
 endif()
 
 # generate binary
-add_executable(${PROJECT_NAME} ${SRC} ${PLATFORM_SRC} src/win/gui/gui.cpp src/win/gui/gui.h)
+add_executable(${PROJECT_NAME} ${SRC} ${PLATFORM_SRC} src/win/gui/gui.cpp src/win/gui/gui.h src/win/utils/generators.cpp src/win/utils/generators.h)
 
 # link lib, should install glfw first or prebuild lib and embed in project
 if (WIN32)

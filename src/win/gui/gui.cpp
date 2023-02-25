@@ -6,7 +6,7 @@
 #include "imgui.h"
 #include  <cstdlib>
 #include <iostream>
-
+#include "../utils/generators.h"
 gui::gui() {
     running = true;
     show_demo_window = false;
@@ -16,6 +16,11 @@ gui::gui() {
     //TODO apply invoices to gui buffer
     for (int i = 0; i < 10; i++) {
         invoices.push_back(generate_invoice());
+    }
+
+    //Fetch existing partners and providers from json files
+    for (int i = 0; i < 5; ++i) {
+        providers.push_back(generators::generate_provider());
     }
 
     strcpy_s(name, "Custom name");
@@ -55,6 +60,7 @@ gui::invoice gui::generate_invoice(){
 
     return new_invoice;
 }
+
 
 void gui::render_table(){
     if (ImGui::BeginTable("table1", 9, flags))
@@ -173,6 +179,31 @@ void gui::edit_invoice() {
             ImGui::InputText("Registration number", current_invoice->provider.registration_number, IM_ARRAYSIZE(current_invoice->provider.registration_number));
             ImGui::InputText("VAT ID", current_invoice->provider.vat, IM_ARRAYSIZE(current_invoice->provider.vat));
             ImGui::InputText("Phone", current_invoice->provider.phone, IM_ARRAYSIZE(current_invoice->provider.phone));
+
+            static ImGuiComboFlags flags = 0;
+            ImGui::CheckboxFlags("ImGuiComboFlags_PopupAlignLeft", &flags, ImGuiComboFlags_PopupAlignLeft);
+            if (ImGui::CheckboxFlags("ImGuiComboFlags_NoArrowButton", &flags, ImGuiComboFlags_NoArrowButton))
+                flags &= ~ImGuiComboFlags_NoPreview;     // Clear the other flag, as we cannot combine both
+            if (ImGui::CheckboxFlags("ImGuiComboFlags_NoPreview", &flags, ImGuiComboFlags_NoPreview))
+                flags &= ~ImGuiComboFlags_NoArrowButton; // Clear the other flag, as we cannot combine both
+            static int item_current_idx = 0; // Here we store our selection data as an index.
+            //!WARNING + BUG : The items have to have different names, otherwise the combo box will not work properly
+            if (ImGui::BeginCombo("Existing Providers", providers[item_current_idx].name, flags))
+            {
+                for (int n = 0; n < providers.size(); n++)
+                {
+                    std::cout << "Provider name: " << providers[n].name << std::endl;
+                    const bool is_selected = (item_current_idx == n);
+                    if (ImGui::Selectable(providers[n].name, is_selected)){
+                        item_current_idx = n;
+                    }
+
+                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                    if (is_selected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Partner"))
@@ -181,6 +212,8 @@ void gui::edit_invoice() {
             ImGui::InputText("Address", current_invoice->partner.address, IM_ARRAYSIZE(current_invoice->partner.address));
             ImGui::InputText("Postal", current_invoice->partner.postal_code, IM_ARRAYSIZE(current_invoice->partner.postal_code));
             ImGui::InputText("VAT ID", current_invoice->partner.vat, IM_ARRAYSIZE(current_invoice->partner.vat));
+
+
 
             ImGui::EndTabItem();
         }

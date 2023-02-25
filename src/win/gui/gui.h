@@ -48,6 +48,9 @@ public:
         provider provider;
     };
     std::vector<invoice> invoices;
+    //Existing Partners and Providers
+    std::vector<partner> partners;
+    std::vector<provider> providers;
     gui();
     ~gui();
     void stop();
