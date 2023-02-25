@@ -97,7 +97,6 @@ void gui::render_table(){
 }
 
 void gui::edit_invoice() {
-    //TODO edit invoice
     ImGui::Begin("Edit invoice");
     ImGui::Text("Selected invoice: %s", this->current_invoice->invoice_number);
     ImGui::InputText("Invoice number", current_invoice->invoice_number, IM_ARRAYSIZE(current_invoice->invoice_number));
@@ -120,6 +119,36 @@ void gui::edit_invoice() {
         this->edit_mode = reinterpret_cast<bool *>(false);
         std::cout << "Edit mode to false" << std::endl;
     }
+    if(ImGui::Button("Cancel", ImVec2(-FLT_TRUE_MIN, 0.0f))){
+        std::cout << "Edit mode to false" << std::endl;
+        this->current_invoice = nullptr;
+        std::cout << "Current invoice to nullptr" << std::endl;
+        this->edit_mode = reinterpret_cast<bool *>(false);
+        std::cout << "Edit mode to false" << std::endl;
+    }
+    ImGui::PushID(69);
+    //Make the button red
+    ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.0f, 0.6f, 0.6f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.0f, 0.7f, 0.7f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.0f, 0.8f, 0.8f));
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+    if(ImGui::Button("Delete", ImVec2(-FLT_TRUE_MIN, 0.0f))){
+        std::cout << "Delete invoice" << std::endl;
+        this->current_invoice = nullptr;
+        std::cout << "Current invoice to nullptr" << std::endl;
+        this->edit_mode = reinterpret_cast<bool *>(false);
+        std::cout << "Edit mode to false" << std::endl;
+    }
+    ImGui::PopStyleColor(3);
+    ImGui::PopID();
     ImGui::End();
 }
 
@@ -152,7 +181,7 @@ void gui::show() {
     }
     this->render_table();
     if (edit_mode)
-    {   std::cout << "Edit mode is true" << std::endl;
+    {
         this->edit_invoice();
     }
 
