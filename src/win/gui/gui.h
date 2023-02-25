@@ -11,6 +11,23 @@
 
 class gui {
 public:
+
+    struct partner {
+        char name[128];
+        char address[128];
+        char postal_code[128];
+        char vat[128];
+    };
+    struct provider {
+        char name[128];
+        char address[128];
+        char postal_code[128];
+        char vat[128];
+        char iban[128];
+        char swift[128];
+        char registration_number[128];
+        char phone[128];
+    };
     struct invoice {
         char name[128];
         char address[128];
@@ -20,12 +37,15 @@ public:
         char phone[128];
         char email[128];
         char date[128];
+        char service_date[128];
         char due_date[128];
         char invoice_number[128];
         char description[128];
         char quantity[128];
         char price[128];
         char total[128];
+        partner partner;
+        provider provider;
     };
     std::vector<invoice> invoices;
     gui();
