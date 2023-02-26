@@ -7,16 +7,21 @@
 #include  <cstdlib>
 #include <iostream>
 #include "../utils/generators.h"
+#include "../json/json_utils.h"
 gui::gui() {
+    json_utils* json = new json_utils();
+    //Setup window
     running = true;
     show_demo_window = false;
     static ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
     //Load json files and apply the invoices to the gui buffer
     //TODO load json files
     //TODO apply invoices to gui buffer
+
     for (int i = 0; i < 10; i++) {
         invoices.push_back(generate_invoice());
     }
+
     //Fetch existing partners and providers from json files
     providers.push_back(generators::generate_provider("Maj", "Kranjska cesta 1", "1000", "123456789", "123456789", "123456789", "123456789", "123456789"));
     providers.push_back(generators::generate_provider("test4", "Kranjska cesta 5", "4444", "12345112", "aodmaspd12312", "asdada", "1231asdas", "fasfafas"));

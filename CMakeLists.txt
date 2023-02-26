@@ -45,6 +45,7 @@ elseif (UNIX)
         ./imgui-1.83/backends/imgui_impl_glfw.*
         ./imgui-1.83/backends/imgui_impl_opengl3.*
         ./src/unix/main.cpp
+
     )
 endif()
 
@@ -58,7 +59,7 @@ if (APPLE)
 endif()
 
 # generate binary
-add_executable(${PROJECT_NAME} ${SRC} ${PLATFORM_SRC} src/win/gui/gui.cpp src/win/gui/gui.h src/win/utils/generators.cpp src/win/utils/generators.h)
+add_executable(${PROJECT_NAME} ${SRC} ${PLATFORM_SRC} src/win/gui/gui.cpp src/win/gui/gui.h src/win/utils/generators.cpp src/win/utils/generators.h src/win/json/json_utils.cpp src/win/json/json_utils.h)
 
 # link lib, should install glfw first or prebuild lib and embed in project
 if (WIN32)

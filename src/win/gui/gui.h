@@ -8,10 +8,10 @@
 #include <vector>
 #include "string"
 #include "imgui.h"
+#include "../json/json_utils.h"
 
 class gui {
 public:
-
     struct partner {
         char name[128];
         char address[128];
@@ -61,6 +61,7 @@ public:
     //Existing Partners and Providers
     std::vector<partner> partners;
     std::vector<provider> providers;
+    //Jsno utils
     gui();
     ~gui();
     void stop();
