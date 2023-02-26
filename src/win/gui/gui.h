@@ -52,6 +52,7 @@ public:
         char quantity[128];
         char price[128];
         char total[128];
+        bool tax_active;
         partner partner;
         provider provider;
         std::vector<service> services;

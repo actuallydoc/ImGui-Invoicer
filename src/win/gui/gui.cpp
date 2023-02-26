@@ -31,6 +31,7 @@ gui::gui() {
 gui::invoice gui::generate_invoice(){
     gui::invoice new_invoice;
     new_invoice.id = rand() % 10000;
+    new_invoice.tax_active = true;
     strcpy_s(new_invoice.name, "Maj");
     strcpy_s(new_invoice.address, "Kranjska cesta 1");
     strcpy_s(new_invoice.city, "Ljubljana");
@@ -131,24 +132,49 @@ void gui::edit_invoice() {
     {
         if (ImGui::BeginTabItem("Invoice"))
         {
+            //Make the input less wide
+            ImGui::PushItemWidth(70);
             ImGui::InputText("Invoice number", current_invoice->invoice_number, IM_ARRAYSIZE(current_invoice->invoice_number));
+            ImGui::PopItemWidth();
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::PushItemWidth(100);
             ImGui::InputText("Name", current_invoice->name, IM_ARRAYSIZE(current_invoice->name));
             ImGui::InputText("Address", current_invoice->address, IM_ARRAYSIZE(current_invoice->address));
+            ImGui::SameLine();
             ImGui::InputText("City", current_invoice->city, IM_ARRAYSIZE(current_invoice->city));
+            ImGui::SameLine();
             ImGui::InputText("State", current_invoice->state, IM_ARRAYSIZE(current_invoice->state));
+            ImGui::SameLine();
             ImGui::InputText("Zip", current_invoice->zip, IM_ARRAYSIZE(current_invoice->zip));
+            ImGui::Spacing();
+            ImGui::Spacing();
             ImGui::InputText("Phone", current_invoice->phone, IM_ARRAYSIZE(current_invoice->phone));
+            ImGui::SameLine();
+            ImGui::PopItemWidth();
+            ImGui::PushItemWidth(160);
             ImGui::InputText("Email", current_invoice->email, IM_ARRAYSIZE(current_invoice->email));
-            ImGui::InputText("Date", current_invoice->date, IM_ARRAYSIZE(current_invoice->date));
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::InputText("Invoice Date", current_invoice->date, IM_ARRAYSIZE(current_invoice->date));
             ImGui::InputText("Due date", current_invoice->due_date, IM_ARRAYSIZE(current_invoice->due_date));
-
-            for(int i = 0; i < current_invoice->services.size(); i++){
-
-                ImGui::InputTextMultiline("Description", current_invoice->services[i].description, IM_ARRAYSIZE(current_invoice->services[i].description));
+            ImGui::InputText("Service date", current_invoice->service_date, IM_ARRAYSIZE(current_invoice->service_date));
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Checkbox("Activate Vat?", &current_invoice->tax_active);
+            ImGui::PopItemWidth();
+            ImGui::PushItemWidth(400);
+            for(auto & service : current_invoice->services){
+                ImGui::InputTextMultiline("Description", service.description, IM_ARRAYSIZE(service.description));
                 ImGui::SameLine();
-                ImGui::InputText("Quantity", current_invoice->services[i].quantity, IM_ARRAYSIZE(current_invoice->services[i].quantity), ImGuiInputTextFlags_CharsDecimal);
-                ImGui::InputText("Price", current_invoice->services[i].price, IM_ARRAYSIZE(current_invoice->services[i].price),ImGuiInputTextFlags_CharsDecimal );
-                ImGui::InputText("Total", current_invoice->services[i].total, IM_ARRAYSIZE(current_invoice->services[i].total),ImGuiInputTextFlags_CharsDecimal );
+                ImGui::PushItemWidth(50);
+                ImGui::SameLine(500);
+                ImGui::InputText("Quantity", service.quantity, IM_ARRAYSIZE(service.quantity), ImGuiInputTextFlags_CharsDecimal);
+                ImGui::SameLine();
+                ImGui::InputText("Price", service.price, IM_ARRAYSIZE(service.price),ImGuiInputTextFlags_CharsDecimal );
+                ImGui::SameLine();
+                ImGui::InputText("Total", service.total, IM_ARRAYSIZE(service.total),ImGuiInputTextFlags_CharsDecimal );
+                ImGui::PopItemWidth();
             }
             if (ImGui::Button("Save", ImVec2(-FLT_TRUE_MIN, 0.0f))) {
                 //TODO save
@@ -174,9 +200,8 @@ void gui::edit_invoice() {
             ImGui::Spacing();
             ImGui::Spacing();
             if(ImGui::Button("Delete", ImVec2(-FLT_TRUE_MIN, 0.0f))){
-                std::cout << "Delete invoice" << std::endl;
                 for(int i = 0; i < invoices.size(); i++){
-
+                    //!TODO Make sure that every invoice has a unique id or atleast it increments by the newest one
                     if(invoices[i].id == current_invoice->id){
                         invoices.erase(invoices.begin() + i);
                         std::cout << "Invoice with id" <<current_invoice->id  << std::endl;
