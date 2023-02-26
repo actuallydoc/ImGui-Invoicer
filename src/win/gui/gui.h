@@ -28,7 +28,15 @@ public:
         char registration_number[128];
         char phone[128];
     };
+    struct service {
+        char description[128];
+        char quantity[128];
+        char price[128];
+        //Total with tax
+        char total[128];
+    };
     struct invoice {
+        uint16_t id;
         char name[128];
         char address[128];
         char city[128];
@@ -46,6 +54,7 @@ public:
         char total[128];
         partner partner;
         provider provider;
+        std::vector<service> services;
     };
     std::vector<invoice> invoices;
     //Existing Partners and Providers

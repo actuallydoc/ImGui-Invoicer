@@ -17,18 +17,20 @@ gui::gui() {
     for (int i = 0; i < 10; i++) {
         invoices.push_back(generate_invoice());
     }
-
     //Fetch existing partners and providers from json files
-    for (int i = 0; i < 5; ++i) {
-        providers.push_back(generators::generate_provider());
-    }
+    providers.push_back(generators::generate_provider("Maj", "Kranjska cesta 1", "1000", "123456789", "123456789", "123456789", "123456789", "123456789"));
+    providers.push_back(generators::generate_provider("test4", "Kranjska cesta 5", "4444", "12345112", "aodmaspd12312", "asdada", "1231asdas", "fasfafas"));
+    providers.push_back(generators::generate_provider("test5", "Kranjska cesta 6", "5555", "12345112", "aodmaspd12312", "asdada", "1231asdas", "fasfafas"));
+    providers.push_back(generators::generate_provider("test6", "Kranjska cesta 7", "6666", "12345112", "aodmaspd12312", "asdada", "1231asdas", "fasfafas"));
+    providers.push_back(generators::generate_provider("test7", "Kranjska cesta 8", "7777", "12345112", "aodmaspd12312", "asdada", "1231asdas", "fasfafas"));
 
-    strcpy_s(name, "Custom name");
+    strcpy_s(name, "Uporabnik");
 
 }
 
 gui::invoice gui::generate_invoice(){
     gui::invoice new_invoice;
+    new_invoice.id = rand() % 10000;
     strcpy_s(new_invoice.name, "Maj");
     strcpy_s(new_invoice.address, "Kranjska cesta 1");
     strcpy_s(new_invoice.city, "Ljubljana");
@@ -44,7 +46,6 @@ gui::invoice gui::generate_invoice(){
     strcpy_s(new_invoice.quantity, "1");
     strcpy_s(new_invoice.price, "100");
     strcpy_s(new_invoice.total, "100");
-
     strcpy_s(new_invoice.partner.name, "Maj");
     strcpy_s(new_invoice.partner.address, "Kranjska cesta 1");
     strcpy_s(new_invoice.partner.postal_code, "1000");
@@ -57,7 +58,13 @@ gui::invoice gui::generate_invoice(){
     strcpy_s(new_invoice.provider.swift, "123456789");
     strcpy_s(new_invoice.provider.registration_number, "123456789");
     strcpy_s(new_invoice.provider.phone, "123456789");
+    gui::service new_service;
+    strcpy_s(new_service.description, "Storitev");
+    strcpy_s(new_service.quantity, "1");
+    strcpy_s(new_service.price, "100");
+    strcpy_s(new_service.total, "100");
 
+    new_invoice.services.push_back(new_service);
     return new_invoice;
 }
 
@@ -98,10 +105,10 @@ void gui::render_table(){
             ImGui::Text("%s", "22%");
             ImGui::TableNextColumn();
             ImGui::PushID(i);
-            ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(i / 7.0f, 0.6f, 0.6f));
-            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(i / 7.0f, 0.7f, 0.7f));
-            ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(i / 7.0f, 0.8f, 0.8f));
-            if(ImGui::Button("Click")){
+            ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(7.0f, 0.6f, 0.6f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(7.0f, 0.7f, 0.7f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(7.0f, 0.8f, 0.8f));
+            if(ImGui::Button("Edit")){
                 std::cout << "Clicked on invoice: " << invoices[i].invoice_number << std::endl;
                 this->current_invoice = &invoices[i];
                 if (!edit_mode){
@@ -135,6 +142,14 @@ void gui::edit_invoice() {
             ImGui::InputText("Date", current_invoice->date, IM_ARRAYSIZE(current_invoice->date));
             ImGui::InputText("Due date", current_invoice->due_date, IM_ARRAYSIZE(current_invoice->due_date));
 
+            for(int i = 0; i < current_invoice->services.size(); i++){
+
+                ImGui::InputTextMultiline("Description", current_invoice->services[i].description, IM_ARRAYSIZE(current_invoice->services[i].description));
+                ImGui::SameLine();
+                ImGui::InputText("Quantity", current_invoice->services[i].quantity, IM_ARRAYSIZE(current_invoice->services[i].quantity), ImGuiInputTextFlags_CharsDecimal);
+                ImGui::InputText("Price", current_invoice->services[i].price, IM_ARRAYSIZE(current_invoice->services[i].price),ImGuiInputTextFlags_CharsDecimal );
+                ImGui::InputText("Total", current_invoice->services[i].total, IM_ARRAYSIZE(current_invoice->services[i].total),ImGuiInputTextFlags_CharsDecimal );
+            }
             if (ImGui::Button("Save", ImVec2(-FLT_TRUE_MIN, 0.0f))) {
                 //TODO save
                 std::cout << "Save before everything" << std::endl;
@@ -160,8 +175,15 @@ void gui::edit_invoice() {
             ImGui::Spacing();
             if(ImGui::Button("Delete", ImVec2(-FLT_TRUE_MIN, 0.0f))){
                 std::cout << "Delete invoice" << std::endl;
+                for(int i = 0; i < invoices.size(); i++){
+
+                    if(invoices[i].id == current_invoice->id){
+                        invoices.erase(invoices.begin() + i);
+                        std::cout << "Invoice with id" <<current_invoice->id  << std::endl;
+
+                    }
+                }
                 this->current_invoice = nullptr;
-                std::cout << "Current invoice to nullptr" << std::endl;
                 this->edit_mode = reinterpret_cast<bool *>(false);
                 std::cout << "Edit mode to false" << std::endl;
             }
@@ -192,9 +214,17 @@ void gui::edit_invoice() {
                 //Todo is to change the provider info on the invoice to the selected provider
                 for (int n = 0; n < providers.size(); n++)
                 {
-                    std::cout << "Provider name: " << providers[n].name << std::endl;
                     const bool is_selected = (item_current_idx == n);
                     if (ImGui::Selectable(providers[n].name, is_selected)){
+                        strcpy_s(this->current_invoice->provider.name, providers[n].name);
+                        strcpy_s(this->current_invoice->provider.address, providers[n].address);
+                        strcpy_s(this->current_invoice->provider.postal_code, providers[n].postal_code);
+                        strcpy_s(this->current_invoice->provider.iban, providers[n].iban);
+                        strcpy_s(this->current_invoice->provider.swift, providers[n].swift);
+                        strcpy_s(this->current_invoice->provider.registration_number, providers[n].registration_number);
+                        strcpy_s(this->current_invoice->provider.vat, providers[n].vat);
+                        strcpy_s(this->current_invoice->provider.phone, providers[n].phone);
+
                         item_current_idx = n;
                     }
 

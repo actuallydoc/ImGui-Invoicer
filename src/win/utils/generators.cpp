@@ -10,7 +10,6 @@ gui::partner generators::generate_partner() {
     strcpy_s(partner.address, "asdad");
     strcpy_s(partner.postal_code, "asdad");
     strcpy_s(partner.vat, "asdad");
-
     return partner;
 }
 
@@ -31,19 +30,20 @@ gui::invoice generators::generate_invoice() {
     strcpy_s(invoice.quantity, "asdad");
     strcpy_s(invoice.price, "asdad");
     strcpy_s(invoice.total, "asdad");
+    invoice.id = rand() % 10000;
     return invoice;
 }
 
-gui::provider generators::generate_provider() {
+gui::provider generators::generate_provider(char *name , char *address , char *postal_code , char *vat , char *iban , char *swift , char *registration_number , char *phone) {
     gui::provider provider;
-    strcpy_s(provider.name, "Provider 1");
-    strcpy_s(provider.address, "asdad");
-    strcpy_s(provider.postal_code, "asdad");
-    strcpy_s(provider.vat, "asdad");
-    strcpy_s(provider.iban, "asdad");
-    strcpy_s(provider.swift, "asdad");
-    strcpy_s(provider.registration_number, "asdad");
-    strcpy_s(provider.phone, "asdad");
+    strcpy_s(provider.name, name);
+    strcpy_s(provider.address, address);
+    strcpy_s(provider.postal_code, postal_code);
+    strcpy_s(provider.vat, vat);
+    strcpy_s(provider.iban, iban);
+    strcpy_s(provider.swift, swift);
+    strcpy_s(provider.registration_number, registration_number);
+    strcpy_s(provider.phone, phone);
     return provider;
 
 }
