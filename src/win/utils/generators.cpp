@@ -33,7 +33,14 @@ gui::invoice generators::generate_invoice() {
     invoice.id = rand() % 10000;
     return invoice;
 }
-
+gui::service generators::generate_service() {
+    gui::service service;
+    strcpy_s(service.description, "");
+    strcpy_s(service.quantity, "");
+    strcpy_s(service.price, "");
+    strcpy_s(service.total, "");
+    return service;
+}
 gui::provider generators::generate_provider(char *name , char *address , char *postal_code , char *vat , char *iban , char *swift , char *registration_number , char *phone) {
     gui::provider provider;
     strcpy_s(provider.name, name);

@@ -174,23 +174,26 @@ void gui::edit_invoice() {
                 ImGui::InputText("Price", service.price, IM_ARRAYSIZE(service.price),ImGuiInputTextFlags_CharsDecimal );
                 ImGui::SameLine();
                 ImGui::InputText("Total", service.total, IM_ARRAYSIZE(service.total),ImGuiInputTextFlags_CharsDecimal );
+                ImGui::SameLine();
+                if(ImGui::Button("Delete")){
+                    //!TODO delete service
+                };
                 ImGui::PopItemWidth();
+
             }
+            if(ImGui::Button("Add service")){
+                //!TODO add service
+            }
+
             if (ImGui::Button("Save", ImVec2(-FLT_TRUE_MIN, 0.0f))) {
                 //TODO save
-                std::cout << "Save before everything" << std::endl;
-                std::cout << "Edit mode to false" << std::endl;
+                //Call a function to save the invoice to the json file
                 this->current_invoice = nullptr;
-                std::cout << "Current invoice to nullptr" << std::endl;
                 this->edit_mode = reinterpret_cast<bool *>(false);
-                std::cout << "Edit mode to false" << std::endl;
             }
             if(ImGui::Button("Cancel", ImVec2(-FLT_TRUE_MIN, 0.0f))){
-                std::cout << "Edit mode to false" << std::endl;
                 this->current_invoice = nullptr;
-                std::cout << "Current invoice to nullptr" << std::endl;
                 this->edit_mode = reinterpret_cast<bool *>(false);
-                std::cout << "Edit mode to false" << std::endl;
             }
             ImGui::PushID(69);
             //Make the button red

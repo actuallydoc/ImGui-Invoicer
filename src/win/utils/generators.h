@@ -13,6 +13,8 @@ public:
     static gui::invoice generate_invoice();
     static gui::partner generate_partner();
     static gui::provider generate_provider(char *name , char *address , char *postal_code , char *vat , char *iban , char *swift , char *registration_number , char *phone);
+
+    static gui::service generate_service();
 };
 
 
